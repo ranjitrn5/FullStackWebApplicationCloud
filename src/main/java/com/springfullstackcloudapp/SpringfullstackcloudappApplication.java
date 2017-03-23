@@ -1,12 +1,12 @@
-package com.springawsapplication;
+package com.springfullstackcloudapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringawsapplicationApplication {
+public class SpringfullstackcloudappApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringawsapplicationApplication.class, args);
+		SpringApplication.run(SpringfullstackcloudappApplication.class, args);
 	}
 }

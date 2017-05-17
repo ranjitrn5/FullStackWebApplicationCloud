@@ -7,6 +7,24 @@
 <div th:replace="common/navbar :: common-navbar"></div>
     <div class="container">
         <div class="row">
+            <div class="col-md-6 col-md-offset-3 text-center">
+                <div th:if="${param.error}" class="alert alert-danger alert-dismissable" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                    <p th:text="#{login.error.message}"></p>
+                </div>
+                <div th:if="${param.logout}" class="alert alert-success alert-dismissable" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                    <p th:text="#{login.logout.success}"></p>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <div class="well">
                     <div class="text-center">

@@ -40,6 +40,10 @@ public class User implements Serializable {
     @Column(name = "stripe_customer_id")
     private String stripeCustomerId;
 
+    private String country;
+
+    private boolean enabled;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "plan_id")
     private Plan plan;
@@ -145,5 +149,21 @@ public class User implements Serializable {
 
     public void setUserRoles(Set<UserRole> userRoles) {
         this.userRoles = userRoles;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

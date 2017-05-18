@@ -2,6 +2,8 @@ package com.springfullstackcloudapp.config;
 
 import com.springfullstackcloudapp.backend.service.EmailService;
 import com.springfullstackcloudapp.backend.service.MockEmailService;
+import org.h2.server.web.WebServlet;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -18,5 +20,12 @@ public class DevelopmentConfig {
     @Bean
     public EmailService emailService(){
         return new MockEmailService();
+    }
+
+    @Bean
+    public ServletRegistrationBean h2ConsoleServletRegistration(){
+        ServletRegistrationBean bean = new ServletRegistrationBean(new WebServlet());
+        bean.addUrlMappings("/console/*");
+        return bean;
     }
 }

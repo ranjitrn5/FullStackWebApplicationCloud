@@ -14,7 +14,7 @@ public class Role implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private int id;
     private String name;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -24,11 +24,11 @@ public class Role implements Serializable {
 
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -55,11 +55,11 @@ public class Role implements Serializable {
 
         Role role = (Role) o;
 
-        return id.equals(role.id);
+        return id == role.id;
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return id;
     }
 }

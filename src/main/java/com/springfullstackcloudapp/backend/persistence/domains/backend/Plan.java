@@ -14,18 +14,18 @@ public class Plan implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private int id;
     private String name;
 
     public Plan(){
 
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -44,11 +44,11 @@ public class Plan implements Serializable {
 
         Plan plan = (Plan) o;
 
-        return id.equals(plan.id);
+        return id == plan.id;
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return id;
     }
 }

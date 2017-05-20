@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.springfullstackcloudapp.backend.service")
 public class SpringfullstackcloudappApplication implements CommandLineRunner {
 
 	@Autowired

@@ -10,6 +10,7 @@ import com.springfullstackcloudapp.backend.persistence.repositories.RoleReposito
 import com.springfullstackcloudapp.backend.persistence.repositories.UserRepository;
 import com.springfullstackcloudapp.enums.PlansEnum;
 import com.springfullstackcloudapp.enums.RolesEnum;
+import com.springfullstackcloudapp.utils.UserUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,8 +37,6 @@ public class RepositoriesIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    private static final int BASIC_PLAN_ID=1;
-
 
     public RepositoriesIntegrationTest() {
         Assert.assertNotNull(planRepository);
@@ -49,7 +48,7 @@ public class RepositoriesIntegrationTest {
     public void testCreateNewPlan() throws Exception{
         Plan basicPlan = createplan(PlansEnum.BASIC);
         planRepository.save(basicPlan);
-        Plan retrievedPlan = planRepository.findOne(BASIC_PLAN_ID);
+        Plan retrievedPlan = planRepository.findOne(PlansEnum.BASIC.getId());
         Assert.assertNotNull(retrievedPlan);
     }
 
@@ -75,7 +74,7 @@ public class RepositoriesIntegrationTest {
         Plan basicPlan = createplan(PlansEnum.BASIC);
         planRepository.save(basicPlan);
 
-        User basicUser = createBasicUser();
+        User basicUser = UserUtils.createBasicUser();
         basicUser.setPlan(basicPlan);
 
         Role basicRole = createRole(RolesEnum.BASIC);
@@ -102,7 +101,7 @@ public class RepositoriesIntegrationTest {
         }
     }
 
-    private User createBasicUser(){
+    /*private User createBasicUser(){
         User user = new User();
         user.setUsername("basicUser");
         user.setPassword("secret");
@@ -116,6 +115,6 @@ public class RepositoriesIntegrationTest {
         user.setProfileImageUrl("http://blable.images.com/basicuser");
 
         return user;
-    }
+    }*/
 
 }

@@ -1,9 +1,12 @@
 package com.springfullstackcloudapp.backend.persistence.domains.backend;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +14,7 @@ import java.util.Set;
  * Created by ranji on 5/17/2017.
  */
 @Entity
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
     /*The Serial Version UID for Serializable Classes*/
     private static final long serialVersionUID = 1L;
 
@@ -65,10 +68,6 @@ public class User implements Serializable {
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -165,5 +164,32 @@ public class User implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;// Since we are not implementing any logic related to account expiration
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        //lambda expression
+        userRoles.forEach(userRole -> authorities.add(new Authority(userRole.getRole().getName())));
+        return authorities;
     }
 }

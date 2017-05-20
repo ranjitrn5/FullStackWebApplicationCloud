@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.util.Assert;
 
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootApplication
+@ComponentScan(basePackages = "com.springfullstackcloudapp.backend.service")
 public class SpringfullstackcloudappApplication implements CommandLineRunner {
 
 	@Autowired
@@ -36,11 +38,9 @@ public class SpringfullstackcloudappApplication implements CommandLineRunner {
 	public void run(String... strings) throws Exception {
 		User user = UserUtils.createBasicUser();
 		Set<UserRole> userRoles = new HashSet<>();
-		userRoles.add(new UserRole(user,new Role(RolesEnum.BASIC)));
-		LOG.debug("Creating user with username {}"user.getUsername());
+		userRoles.add(new UserRole(user,new Role(RolesEnum.PRO)));
+		LOG.debug("Creating user with username {}", user.getUsername());
 		userService.createUser(user,PlansEnum.BASIC,userRoles);
 		LOG.info("User {} is created", user.getUsername());
-
-
 	}
 }

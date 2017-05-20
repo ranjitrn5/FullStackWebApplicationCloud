@@ -10,6 +10,7 @@ import com.springfullstackcloudapp.backend.persistence.repositories.RoleReposito
 import com.springfullstackcloudapp.backend.persistence.repositories.UserRepository;
 import com.springfullstackcloudapp.enums.PlansEnum;
 import com.springfullstackcloudapp.enums.RolesEnum;
+import com.springfullstackcloudapp.utils.UserUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,24 +72,7 @@ public class RepositoriesIntegrationTest {
 
     @Test
     public void createNewUser() throws Exception{
-
-        Plan basicPlan = createplan(PlansEnum.BASIC);
-        planRepository.save(basicPlan);
-
-        User basicUser = createBasicUser();
-        basicUser.setPlan(basicPlan);
-
-        Role basicRole = createRole(RolesEnum.BASIC);
-        Set<UserRole> userRoles = new HashSet<>();
-        UserRole userRole = new UserRole(basicUser, basicRole);
-
-        basicUser.getUserRoles().addAll(userRoles);
-
-        for(UserRole ur:userRoles){
-            roleRepository.save(ur.getRole());
-        }
-
-        basicUser = userRepository.save(basicUser);
+        User basicUser = createUser();
         User newlyCreatedUser = userRepository.findOne(basicUser.getId());
         Assert.assertNotNull(newlyCreatedUser);
         Assert.assertTrue(newlyCreatedUser.getId() != 0);
@@ -102,20 +86,31 @@ public class RepositoriesIntegrationTest {
         }
     }
 
-    private User createBasicUser(){
-        User user = new User();
-        user.setUsername("basicUser");
-        user.setPassword("secret");
-        user.setEmail("me@example.com");
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
-        user.setPhoneNumber("123456789123");
-        user.setDescription("A Basic User");
-        user.setCountry("US");
-        user.setEnabled(true);
-        user.setProfileImageUrl("http://blable.images.com/basicuser");
+    @Test
+    public void testDeleteUser() throws Exception{
+        User  basicUser = createUser();
+        userRepository.delete(basicUser.getId());
+    }
 
-        return user;
+    private User createUser(){
+        Plan basicPlan = createplan(PlansEnum.BASIC);
+        planRepository.save(basicPlan);
+
+        User basicUser = UserUtils.createBasicUser();
+        basicUser.setPlan(basicPlan);
+
+        Role basicRole = createRole(RolesEnum.BASIC);
+        Set<UserRole> userRoles = new HashSet<>();
+        UserRole userRole = new UserRole(basicUser, basicRole);
+
+        basicUser.getUserRoles().addAll(userRoles);
+
+        for(UserRole ur:userRoles){
+            roleRepository.save(ur.getRole());
+        }
+
+        basicUser = userRepository.save(basicUser);
+        return basicUser;
     }
 
 }

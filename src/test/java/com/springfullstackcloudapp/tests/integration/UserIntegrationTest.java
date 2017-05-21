@@ -28,24 +28,16 @@ import java.util.Set;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SpringfullstackcloudappApplication.class)
-public class RepositoriesIntegrationTest {
+public class UserIntegrationTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private PlanRepository planRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
     @Rule public TestName testName = new TestName();
 
 
-    public RepositoriesIntegrationTest() {
+    /*public UserIntegrationTest() {
         Assert.assertNotNull(planRepository);
         Assert.assertNotNull(roleRepository);
         Assert.assertNotNull(userRepository);
-    }
+    }*/
 
     @Test
     public void testCreateNewPlan() throws Exception{
@@ -55,20 +47,12 @@ public class RepositoriesIntegrationTest {
         Assert.assertNotNull(retrievedPlan);
     }
 
-    private Plan createplan(PlansEnum plansEnum){
-       return new Plan(plansEnum);
-    }
-
     @Test
     public void testCreateNewRole() throws Exception{
         Role basicRole = createRole(RolesEnum.BASIC);
         roleRepository.save(basicRole);
         Role retrievedRole = roleRepository.findOne(RolesEnum.BASIC.getId());
         Assert.assertNotNull(retrievedRole);
-    }
-
-    private Role createRole(RolesEnum rolesEnum){
-        return new Role(rolesEnum);
     }
 
     @Test
@@ -97,45 +81,4 @@ public class RepositoriesIntegrationTest {
         User  basicUser = createUser(username, email);
         userRepository.delete(basicUser.getId());
     }
-
-    private User createUser(String username, String email){
-        Plan basicPlan = createplan(PlansEnum.BASIC);
-        planRepository.save(basicPlan);
-
-        User basicUser = UserUtils.createBasicUser(username, email);
-        basicUser.setPlan(basicPlan);
-
-        Role basicRole = createRole(RolesEnum.BASIC);
-        Set<UserRole> userRoles = new HashSet<>();
-        UserRole userRole = new UserRole(basicUser, basicRole);
-
-        basicUser.getUserRoles().addAll(userRoles);
-
-        for(UserRole ur:userRoles){
-            roleRepository.save(ur.getRole());
-        }
-
-        basicUser = userRepository.save(basicUser);
-        return basicUser;
-    }
-
-    }
-
-    /*private User createBasicUser(){
-        User user = new User();
-        user.setUsername("basicUser");
-        user.setPassword("secret");
-        user.setEmail("me@example.com");
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
-        user.setPhoneNumber("123456789123");
-        user.setDescription("A Basic User");
-        user.setCountry("US");
-        user.setEnabled(true);
-        user.setProfileImageUrl("http://blable.images.com/basicuser");
-
-        return user;
-    }*/
-
-
-
+}

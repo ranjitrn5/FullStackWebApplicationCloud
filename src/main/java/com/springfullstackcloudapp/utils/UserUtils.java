@@ -1,15 +1,15 @@
 package com.springfullstackcloudapp.utils;
 
 import com.springfullstackcloudapp.backend.persistence.domains.backend.User;
+import com.springfullstackcloudapp.web.controllers.forgotPassword.ForgotPasswordController;
+
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Created by ranji on 5/19/2017.
  */
 public class UserUtils {
-
-    private UserUtils(){
-        throw new AssertionError("Non instantiable");
-    }
 
     /**
      * Creates a user with basic attributes set to it
@@ -32,5 +32,19 @@ public class UserUtils {
         user.setProfileImageUrl("http://blable.images.com/basicuser");
 
         return user;
+    }
+
+    public static String createPasswordResetUrl(HttpServletRequest request, long userId, String token) {
+        String passwordResetUrl =
+                request.getScheme()+
+                        "://"+request.getServerName()+
+                        ":"+request.getServerPort()+
+                        request.getContextPath()+
+                        ForgotPasswordController.CHANGE_PASSWORD_PATH+
+                        "?id="+userId+
+                        "&token="+token;
+
+        return passwordResetUrl;
+
     }
 }

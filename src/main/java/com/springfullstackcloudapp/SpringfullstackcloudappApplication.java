@@ -46,7 +46,7 @@ public class SpringfullstackcloudappApplication implements CommandLineRunner {
 	@Override
 	public void run(String... strings) throws Exception {
 
-		User user = UserUtils.createBasicUser(webmasterUsername, webmasterPassword);
+		User user = UserUtils.createBasicUser(webmasterUsername, webmasterEmail);
 		user.setPassword(webmasterPassword);
 		Set<UserRole> userRoles = new HashSet<>();
 		userRoles.add(new UserRole(user,new Role(RolesEnum.ADMIN)));

@@ -1,4 +1,4 @@
-package com.springfullstackcloudapp.web.i18n;
+package com.springfullstackcloudapp.backend.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

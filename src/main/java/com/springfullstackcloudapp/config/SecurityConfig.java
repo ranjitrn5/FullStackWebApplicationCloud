@@ -1,6 +1,7 @@
 package com.springfullstackcloudapp.config;
 
 import com.springfullstackcloudapp.backend.service.UserSecurityService;
+import com.springfullstackcloudapp.web.controllers.forgotPassword.ForgotPasswordController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/about/**",
             "/contact/**",
             "/error/**",
-            "/console/**"
+            "/console/**",
+            ForgotPasswordController.FORGOT_PASSWORD_URL_MAPPING,
+            ForgotPasswordController.EMAIL_ADDRESS_VIEW_NAME
     };
 
     @Override

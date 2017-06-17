@@ -1,6 +1,6 @@
 package com.springfullstackcloudapp;
 
-import com.springfullstackcloudapp.web.i18n.I18NService;
+import com.springfullstackcloudapp.backend.service.I18NService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -3,6 +3,7 @@ package com.springfullstackcloudapp;
 import com.springfullstackcloudapp.backend.persistence.domains.backend.Role;
 import com.springfullstackcloudapp.backend.persistence.domains.backend.User;
 import com.springfullstackcloudapp.backend.persistence.domains.backend.UserRole;
+import com.springfullstackcloudapp.backend.service.PlanService;
 import com.springfullstackcloudapp.backend.service.UserService;
 import com.springfullstackcloudapp.enums.PlansEnum;
 import com.springfullstackcloudapp.enums.RolesEnum;
@@ -26,6 +27,9 @@ public class SpringfullstackcloudappApplication implements CommandLineRunner {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private PlanService planService;
 	
 	/* The Application Logger*/
 	private static final Logger LOG = LoggerFactory.getLogger(SpringfullstackcloudappApplication.class);
@@ -45,6 +49,10 @@ public class SpringfullstackcloudappApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... strings) throws Exception {
+
+		LOG.info("Creating Basic and Pro plans in database");
+		planService.createPlan(PlansEnum.BASIC.getId());
+		planService.createPlan(PlansEnum.PRO.getId());
 
 		User user = UserUtils.createBasicUser(webmasterUsername, webmasterEmail);
 		user.setPassword(webmasterPassword);

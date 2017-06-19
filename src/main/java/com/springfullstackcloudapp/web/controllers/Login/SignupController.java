@@ -6,9 +6,11 @@ import com.springfullstackcloudapp.backend.persistence.domains.backend.User;
 import com.springfullstackcloudapp.backend.persistence.domains.backend.UserRole;
 import com.springfullstackcloudapp.backend.service.PlanService;
 import com.springfullstackcloudapp.backend.service.S3Service;
+import com.springfullstackcloudapp.backend.service.StripeService;
 import com.springfullstackcloudapp.backend.service.UserService;
 import com.springfullstackcloudapp.enums.PlansEnum;
 import com.springfullstackcloudapp.enums.RolesEnum;
+import com.springfullstackcloudapp.utils.StripeUtils;
 import com.springfullstackcloudapp.utils.UserUtils;
 import com.springfullstackcloudapp.web.domain.frontend.ProAccountPayload;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,10 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ranji on 6/18/2017.
@@ -46,6 +46,9 @@ public class SignupController {
 
     @Autowired
     private S3Service s3Service;
+
+    @Autowired
+    private StripeService stripeService;
 
     /* The Application Logger*/
     private static final Logger LOG = LoggerFactory.getLogger(SignupController.class);
@@ -134,7 +137,31 @@ public class SignupController {
             registeredUser = userService.createUser(user, PlansEnum.BASIC, roles);
         }else{
             roles.add(new UserRole(user, new Role(RolesEnum.PRO)));
+
+            if(StringUtils.isEmpty(payload.getCardCode()) || StringUtils.isEmpty(payload.getCardMonth())
+                    || StringUtils.isEmpty(payload.getCardNumber() )|| StringUtils.isEmpty(payload.getCardYear())){
+                LOG.error("One or more card fields is empty. Returning error to user");
+                model.addAttribute(SIGNED_UP_MESSAGE_KEY, "false");
+                model.addAttribute(ERROR_MESSAGE_KEY, "One or more card details is null or empty");
+                return SUBSCRIPTION_VIEW_NAME;
+            }
+
+            Map<String, Object> stripeTokenParams = StripeUtils.extractTokenParamsFromSignUpPayload(payload);
+
+            Map<String, Object> customerParams = new HashMap<>();
+
+            customerParams.put("description","DevOps Buddy Customer. Username: "+payload.getUsername());
+            customerParams.put("email",payload.getEmail());
+            customerParams.put("plan", selectedPlan.getId());
+            LOG.info("Subscribing customer to plan {}", selectedPlan.getName());
+            String stripeCustomerId = stripeService.createCustomer(stripeTokenParams, customerParams);
+            LOG.info("Username: {} has been subcribed to stripe", payload.getUsername());
+
+            user.setStripeCustomerId(stripeCustomerId);
+
             registeredUser = userService.createUser(user, PlansEnum.PRO, roles);
+
+            LOG.debug(payload.toString());
         }
 
         //Auto logs in user

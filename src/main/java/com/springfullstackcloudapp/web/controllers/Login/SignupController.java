@@ -5,6 +5,7 @@ import com.springfullstackcloudapp.backend.persistence.domains.backend.Role;
 import com.springfullstackcloudapp.backend.persistence.domains.backend.User;
 import com.springfullstackcloudapp.backend.persistence.domains.backend.UserRole;
 import com.springfullstackcloudapp.backend.service.PlanService;
+import com.springfullstackcloudapp.backend.service.S3Service;
 import com.springfullstackcloudapp.backend.service.UserService;
 import com.springfullstackcloudapp.enums.PlansEnum;
 import com.springfullstackcloudapp.enums.RolesEnum;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -41,6 +43,9 @@ public class SignupController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private S3Service s3Service;
 
     /* The Application Logger*/
     private static final Logger LOG = LoggerFactory.getLogger(SignupController.class);
@@ -65,6 +70,7 @@ public class SignupController {
 
     @RequestMapping(value = SIGNUP_URL_MAPPING, method = RequestMethod.POST)
     public String signUpPost(@RequestParam(name = "planId", required = true) int planId,
+                             @RequestParam(name = "file", required = false) MultipartFile multipartFile,
                              @ModelAttribute(PAYLOAD_MODEL_KEY_NAME) @Valid ProAccountPayload payload, ModelMap model) throws IOException{
         if(planId != PlansEnum.BASIC.getId() && planId != PlansEnum.PRO.getId()){
             model.addAttribute(SIGNED_UP_MESSAGE_KEY,"false");
@@ -99,6 +105,15 @@ public class SignupController {
         LOG.debug("Transforming user payload into user domain object");
 
         User user = UserUtils.fromWebUserToDomainUser(payload);
+
+        if(multipartFile != null && !multipartFile.isEmpty()){
+            String profileImageUrl = s3Service.storeProfileImage(multipartFile, payload.getUsername());
+            if(profileImageUrl != null){
+                user.setProfileImageUrl(profileImageUrl);
+            }else{
+                LOG.warn("There was a problem uploading profile image to S3. The user's profile will be created without image");
+            }
+        }
 
         LOG.debug("Retrieving plan from database");
         Plan selectedPlan = planService.findPlanById(planId);
